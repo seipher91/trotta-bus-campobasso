@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, Bus, ChevronDown, Clock } from 'lucide-react';
-import { LINE_7_WINTER_DATA, LINE_8_WINTER_DATA } from './constants';
-import { LINE_7_SUMMER_DATA, LINE_8_SUMMER_DATA } from './constants_summer';
+import { LINE_7_WINTER_DATA, LINE_8_WINTER_DATA, LINE_9_WINTER_DATA } from './constants';
+import { LINE_7_SUMMER_DATA, LINE_8_SUMMER_DATA, LINE_9_SUMMER_DATA } from './constants_summer';
 import { Season } from './types';
 import { getInitialSeason, getClosestTimeIndex } from './utils/season';
 import Timeline from './components/Timeline';
@@ -10,8 +10,8 @@ import SeasonToggle from './components/SeasonToggle';
 // Define the available views
 type View = 'home' | 'detail';
 
-const WINTER_LINES = [LINE_7_WINTER_DATA, LINE_8_WINTER_DATA];
-const SUMMER_LINES = [LINE_7_SUMMER_DATA, LINE_8_SUMMER_DATA];
+const WINTER_LINES = [LINE_7_WINTER_DATA, LINE_8_WINTER_DATA, LINE_9_WINTER_DATA];
+const SUMMER_LINES = [LINE_7_SUMMER_DATA, LINE_8_SUMMER_DATA, LINE_9_SUMMER_DATA];
 
 function App() {
   const [view, setView] = useState<View>('home');
