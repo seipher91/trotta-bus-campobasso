@@ -1,6 +1,6 @@
 import { LineData } from './types';
 
-export const LINE_7_DATA: LineData = {
+export const LINE_7_WINTER_DATA: LineData = {
   id: 'line-7',
   name: 'Linea 7',
   description: 'Circolare Ospedale',
@@ -10,7 +10,7 @@ export const LINE_7_DATA: LineData = {
       times: ['06:35', '07:10', '07:45', '08:20', '08:55', '09:30', '10:05', '10:40', '11:15', '11:50', '12:25', '13:00', '13:35', '14:10', '14:45', '15:20', '15:55', '16:30', '17:05', '17:40', '18:15', '18:50', '19:25', '20:00', '20:35']
     },
     {
-      stopName: 'Piazza della Vittoria',
+      stopName: 'Piazza della Vittoria (Obelisco)',
       times: ['06:37', '07:12', '07:47', '08:22', '08:57', '09:32', '10:07', '10:42', '11:17', '11:52', '12:27', '13:02', '13:37', '14:12', '14:47', '15:22', '15:57', '16:32', '17:07', '17:42', '18:17', '18:52', '19:27', '20:02', '20:37']
     },
     {
