@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Bus, ChevronDown, Clock } from 'lucide-react';
+import { ArrowLeft, Bus, ChevronDown, Clock, Heart } from 'lucide-react';
 import { LINE_7_WINTER_DATA, LINE_8_WINTER_DATA, LINE_9_WINTER_DATA } from './constants';
 import { LINE_7_SUMMER_DATA, LINE_8_SUMMER_DATA, LINE_9_SUMMER_DATA } from './constants_summer';
 import { Season } from './types';
@@ -93,8 +93,20 @@ function App() {
           })}
         </div>
 
-        <footer className="mt-auto pt-10 text-slate-400 text-xs text-center">
-          <p>© {new Date().getFullYear()} Trotta Bus Assistant</p>
+        <footer className="mt-auto pt-10 pb-6 text-slate-400 text-xs text-center">
+          <div className="flex items-center justify-center gap-1">
+            <span>Dev with</span>
+            <Heart size={14} className="text-red-500 fill-red-500" />
+            <span>by</span>
+            <a
+              href="https://vittoriobarile.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-slate-500 hover:text-bus-600 transition-colors"
+            >
+              Vittorio Barile
+            </a>
+          </div>
         </footer>
       </div>
     );
