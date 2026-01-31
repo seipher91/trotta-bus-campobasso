@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, Bus, ChevronDown, Clock } from 'lucide-react';
-import { LINE_7_WINTER_DATA } from './constants';
-import { LINE_7_SUMMER_DATA } from './constants_summer';
+import { LINE_7_WINTER_DATA, LINE_8_WINTER_DATA } from './constants';
+import { LINE_7_SUMMER_DATA, LINE_8_SUMMER_DATA } from './constants_summer';
 import { Season } from './types';
 import { getInitialSeason, getClosestTimeIndex } from './utils/season';
 import Timeline from './components/Timeline';
@@ -10,35 +10,42 @@ import SeasonToggle from './components/SeasonToggle';
 // Define the available views
 type View = 'home' | 'detail';
 
+const WINTER_LINES = [LINE_7_WINTER_DATA, LINE_8_WINTER_DATA];
+const SUMMER_LINES = [LINE_7_SUMMER_DATA, LINE_8_SUMMER_DATA];
+
 function App() {
   const [view, setView] = useState<View>('home');
   // Initialize season state directly
   const [season, setSeason] = useState<Season>(getInitialSeason);
+  const [selectedLineId, setSelectedLineId] = useState<number>(0);
 
   // Choose data based on season
-  const currentLineData = season === Season.SUMMER ? LINE_7_SUMMER_DATA : LINE_7_WINTER_DATA;
+  const availableLines = season === Season.SUMMER ? SUMMER_LINES : WINTER_LINES;
+  const currentLineData = availableLines[selectedLineId];
 
   const [selectedTimeIndex, setSelectedTimeIndex] = useState<number>(0);
 
-  // Update selected index when line data (season) changes
+  // Update selected index when line data (season or line selection) changes
   useEffect(() => {
     // Find closest upcoming departure
-    const departureTimes = currentLineData.schedules[0].times;
-    const closestIndex = getClosestTimeIndex(departureTimes);
-    setSelectedTimeIndex(closestIndex);
+    if (currentLineData && currentLineData.schedules && currentLineData.schedules[0]) {
+      const departureTimes = currentLineData.schedules[0].times;
+      const closestIndex = getClosestTimeIndex(departureTimes);
+      setSelectedTimeIndex(closestIndex);
+    }
   }, [currentLineData]);
 
   const handleSeasonToggle = () => {
     setSeason(prev => prev === Season.SUMMER ? Season.WINTER : Season.SUMMER);
   };
 
-  const currentDepartureTime = currentLineData.schedules[0].times[selectedTimeIndex];
+  const currentDepartureTime = currentLineData?.schedules?.[0]?.times?.[selectedTimeIndex];
 
   // Render Home View
   if (view === 'home') {
     return (
       <div className="min-h-screen p-6 flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-bus-50">
-        <header className="mb-12 text-center">
+        <header className="mb-8 text-center">
           <div className="w-20 h-20 bg-bus-500 rounded-3xl shadow-xl shadow-bus-200 flex items-center justify-center mx-auto mb-6 rotate-3">
             <Bus size={40} className="text-white" />
           </div>
@@ -46,27 +53,44 @@ function App() {
           <p className="text-slate-500 font-medium">Campobasso</p>
         </header>
 
-        <div
-          onClick={() => setView('detail')}
-          className="w-full max-w-sm glass-panel p-6 rounded-3xl shadow-lg border-2 border-white/50 cursor-pointer active:scale-95 transition-all duration-200 group relative overflow-hidden"
-        >
-          <div className="absolute right-0 top-0 w-32 h-32 bg-bus-200/20 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none" />
+        <div className="w-full max-w-sm mb-6">
+          <SeasonToggle season={season} onToggle={handleSeasonToggle} />
+        </div>
 
-          <div className="flex items-center justify-between mb-4">
-            <span className="bg-bus-100 text-bus-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-              Circolare
-            </span>
-            <ArrowLeft className="rotate-180 text-bus-400 group-hover:translate-x-1 transition-transform" size={20} />
-          </div>
+        <div className="w-full max-w-sm space-y-4">
+          {availableLines.map((line, index) => {
+            const nextDepartureIndex = getClosestTimeIndex(line.schedules[0].times);
+            const nextDeparture = line.schedules[0].times[nextDepartureIndex];
 
-          <h2 className="text-2xl font-bold text-slate-800 mb-1">{currentLineData.name}</h2>
-          <p className="text-slate-500 text-sm mb-6">{currentLineData.description}</p>
+            return (
+              <div
+                key={line.id}
+                onClick={() => {
+                  setSelectedLineId(index);
+                  setView('detail');
+                }}
+                className="w-full glass-panel p-5 rounded-3xl shadow-lg border-2 border-white/50 cursor-pointer active:scale-95 transition-all duration-200 group relative overflow-hidden"
+              >
+                <div className="absolute right-0 top-0 w-24 h-24 bg-bus-200/20 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none" />
 
-          <div className="flex items-center gap-3 text-sm font-medium text-slate-600 bg-white/50 p-3 rounded-xl">
-            <Clock size={16} className="text-bus-500" />
-            <span>Prossima partenza: </span>
-            <span className="text-bus-700 font-bold ml-auto">{currentDepartureTime}</span>
-          </div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="bg-bus-100 text-bus-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                    Circolare
+                  </span>
+                  <ArrowLeft className="rotate-180 text-bus-400 group-hover:translate-x-1 transition-transform" size={20} />
+                </div>
+
+                <h2 className="text-xl font-bold text-slate-800 mb-1">{line.name}</h2>
+                <p className="text-slate-500 text-sm mb-4 line-clamp-1">{line.description}</p>
+
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white/50 p-2.5 rounded-xl">
+                  <Clock size={14} className="text-bus-500" />
+                  <span>Prossima: </span>
+                  <span className="text-bus-700 font-bold ml-auto text-sm">{nextDeparture}</span>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <footer className="mt-auto pt-10 text-slate-400 text-xs text-center">
